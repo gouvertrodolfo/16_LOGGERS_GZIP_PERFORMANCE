@@ -2,7 +2,7 @@ const express = require('express')
 const session = require('express-session')
 const cluster = require('cluster')
 const compression = require('compression')
-const log =require('./logger')
+const {logger} = require('./logger')
 
 
 /**************************************************************************************** */
@@ -33,17 +33,17 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
 
     const numCPUs = require('os').cpus().length
 
-    log.info(`PID MASTER ${process.pid}`)
+    logger.info(`PID MASTER ${process.pid}`)
 
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork()
 
-        log.info('creando una instancia nueva...')
+        logger.info('creando una instancia nueva...')
 
     }
 
     cluster.on('exit', worker => {
-        log.warn('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+        logger.warn('Worker', worker.process.pid, 'died', new Date().toLocaleString())
         cluster.fork()
     })
 
@@ -150,13 +150,13 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
 
     controllersdb.conectarDB(err => {
 
-        if (err) return log.error('error en conexión de base de datos', err);
-        log.info('BASE DE DATOS CONECTADA');
+        if (err) return logger.error('error en conexión de base de datos', err);
+        logger.info('BASE DE DATOS CONECTADA');
 
         const connectedServer = httpServer.listen(args.port, function () {
-            log.info(`Servidor Http con Websockets escuchando en el puerto ${connectedServer.address().port}`)
+            logger.info(`Servidor Http con Websockets escuchando en el puerto ${connectedServer.address().port}`)
         })
-        connectedServer.on('error', error => log.error(`Error en servidor ${error}`))
+        connectedServer.on('error', error => logger.error(`Error en servidor ${error}`))
 
 
     });

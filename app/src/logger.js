@@ -1,4 +1,4 @@
-const {log4js} = require('log4js');
+const log4js = require('log4js');
 
 log4js.configure({
   appenders: {
@@ -42,4 +42,4 @@ if (process.env.NODE_ENV === 'PROD') {
 }
 
 
-exports.info = info;
+exports.logger = logger;

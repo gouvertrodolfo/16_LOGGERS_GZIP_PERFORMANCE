@@ -2,6 +2,7 @@ require('dotenv').config()
 const { options } = require('../../options/mariaDB')
 options.connection.user = process.env.MARIA_DB_USER
 options.connection.password = process.env.MARIA_DB_PASSWORD
+const {logger} = require('../logger')
 
 const knex = require('knex')(options)
 
@@ -24,17 +25,15 @@ class ProductosKnex {
                         table.string('price')
                         table.string('thumbnail')
                     })
-                        .then(console.log("tabla productos creada"))
-                        .catch((err) => { console.log(err); throw err })
+                        .then(logger.info("tabla productos creada"))
+                        .catch((err) => { logger.error(err); throw err })
                         .finally(() => { knex.destroy() })
-
-
-                    console.log('Tabla productos creada!');
+                   
                 }
-                else { console.log('La tabla productos ya existe!'); }
+                else { logger.info('La tabla productos ya existe!'); }
             })
         } catch (error) {
-            console.log(error);
+            logger.info(error);
         }
     }
 
@@ -63,7 +62,7 @@ class ProductosKnex {
 
         }
         catch (error) {
-            console.log(`Error al guardar archivo ${error}`)
+            logger.error(`Error al guardar archivo ${error}`)
         }
 
         object.id = nuevo_id;
@@ -77,7 +76,7 @@ class ProductosKnex {
         try {
             const producto = await knex.select().from('productos').where('id', clave)
             return producto
-        } catch (err) { console.log(err) }
+        } catch (err) { logger.error(err) }
 
     }
 
@@ -91,7 +90,7 @@ class ProductosKnex {
             this.listaproductos = await knex.select().from('productos').orderBy('id', 'desc')
         }
         catch (error) {
-            console.log(`Error al eliminar ${error}`)
+            logger.error(`Error al eliminar ${error}`)
         }
 
     }
@@ -102,7 +101,7 @@ class ProductosKnex {
             knex('productos').truncate()
         }
         catch (error) {
-            console.log(`Error al truncar ${error}`)
+            logger.error(`Error al truncar ${error}`)
         }
 
         this.listaproductos = []
@@ -122,7 +121,7 @@ class ProductosKnex {
             this.listaproductos = await knex.select().from('productos').orderBy('id', 'desc')
         }
         catch (error) {
-            console.log(`Error al actualizar ${error}`)
+            logger.error(`Error al actualizar ${error}`)
         }
     }
 }
