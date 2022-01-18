@@ -3,7 +3,8 @@ const log4js = require('log4js');
 log4js.configure({
   appenders: {
     consola: { type: 'console' },
-    archivoErrores: { type: 'file', filename: 'errores.log' },
+    archivoWarning: { type: 'file', filename: 'warn.log' },
+    archivoErrores: { type: 'file', filename: 'error.log' },
     archivoDebug: { type: 'file', filename: 'debug.log' },
     loggerConsola: {
       type: 'logLevelFilter',
@@ -15,10 +16,10 @@ log4js.configure({
       appender: 'archivoErrores',
       level: 'error',
     },
-    loggerArchivoDebug: {
+    loggerArchivoWarning: {
       type: 'logLevelFilter',
-      appender: 'archivoDebug',
-      level: 'debug',
+      appender: 'archivoWarning',
+      level: 'warn',
     },
   },
   categories: {
@@ -26,8 +27,12 @@ log4js.configure({
       appenders: ['loggerConsola'],
       level: 'all',
     },
+    entrega:{
+      appenders: ['loggerArchivoErrores', 'loggerArchivoWarning', 'loggerConsola'],
+      level: 'all'
+    },
     prod: {
-      appenders: ['loggerArchivoErrores', 'loggerArchivoDebug'],
+      appenders: ['loggerArchivoErrores', 'loggerArchivoWarning'],
       level: 'all',
     },
   },
@@ -38,7 +43,7 @@ let logger = null
 if (process.env.NODE_ENV === 'PROD') {
   logger = log4js.getLogger('prod')
 } else {
-  logger = log4js.getLogger()
+  logger = log4js.getLogger('entrega')
 }
 
 

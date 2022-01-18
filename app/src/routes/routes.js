@@ -1,3 +1,5 @@
+const {logger} = require('../logger')
+
 // ------------------------------------------------------------------------------
 //  ROUTING
 // ------------------------------------------------------------------------------
@@ -48,7 +50,9 @@ function getLogout(req, res) {
 
 function failRoute(req, res) {
   const title = 'ROUTING ERROR';
-  res.status(404).render('pages/error', { titulo: title });
+  const { url, method } = req
+  logger.warn(`Ruta ${method} ${url} inexistente`)
+  res.status(404).json( { titulo: title });
 }
 
 module.exports = {

@@ -20,6 +20,7 @@ const args = yargs
         default: 'fork',
         type: 'string'
     })
+    NODE_ENV
     .boolean('producto_mongo')
     .boolean('user_mongo')
     .argv
@@ -142,7 +143,7 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
     app.get('/logout', routes.getLogout);
 
     //  FAIL ROUTE
-    app.get('*', routes.failRoute);
+    app.get('/*', routes.failRoute);
 
     /**************************************************************************************** */
 
