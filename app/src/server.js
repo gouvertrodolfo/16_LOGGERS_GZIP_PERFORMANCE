@@ -2,6 +2,8 @@ const express = require('express')
 const session = require('express-session')
 const cluster = require('cluster')
 const compression = require('compression')
+const log =require('./logger')
+
 
 /**************************************************************************************** */
 
@@ -31,17 +33,17 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
 
     const numCPUs = require('os').cpus().length
 
-    console.log(`PID MASTER ${process.pid}`)
+    log.info(`PID MASTER ${process.pid}`)
 
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork()
 
-        console.log('creando una instancia nueva...')
+        log.info('creando una instancia nueva...')
 
     }
 
     cluster.on('exit', worker => {
-        console.log('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+        log.warn('Worker', worker.process.pid, 'died', new Date().toLocaleString())
         cluster.fork()
     })
 
@@ -75,8 +77,6 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
 
 
     /**************************************************************************************** */
-
-
     app.use(express.static('public'))
 
     //Configuracion del motor de vistas que se usara
@@ -146,69 +146,17 @@ if (args.mode === 'cluster' && cluster.isPrimary) {
 
     /**************************************************************************************** */
 
-    // const normalizr = require("normalizr")
-    // // const normalize = normalizer.normalize;
-    // const schema = normalizr.schema;
 
-    // // Definimos un esquema author
-    // const author_schema = new schema.Entity('author', {}, { idAttribute: 'correo' });
-
-    // // Definimos un esquema de mensaje
-    // const mensaje_schema = new schema.Entity('mensaje', {
-    //     author: author_schema
-    // }, { idAttribute: '_id' });
-
-    // // Definimos un esquema de mensaje
-    // const mensajes_schema = new schema.Array(mensaje_schema);
-
-    // /**************************************************************************************** */
-
-    // io.on('connection', async socket => {
-
-    //     console.log('Nuevo cliente conectado!')
-
-    //     let mensajes = await chat.getAll();
-
-    //     const mensajes_normal = normalizr.normalize(mensajes, mensajes_schema)
-
-    //     /* Envio los mensajes al cliente que se conectó */
-    //     socket.emit('mensajes', mensajes_normal)
-
-    //     const produc = await productos.listarTodo();
-    //     socket.emit('productos', produc)
-
-    //     /* Escucho los mensajes enviado por el cliente y se los propago a todos */
-    //     socket.on('nuevoMensaje', async data => {
-
-    //         mensajes = await chat.AddMensaje(data)
-    //         const mensajes_normal = normalizr.normalize(mensajes, mensajes_schema)
-
-    //         io.sockets.emit('mensajes', mensajes_normal)
-    //     })
-
-    //     /* Escucho los nuevos productos enviado por el cliente y se los propago a todos */
-    //     socket.on('nuevoProducto', async prd => {
-
-    //         await productos.insertar(prd)
-    //         const listado = await productos.listarTodo();
-    //         console.log(listado)
-    //         io.sockets.emit('productos', listado)
-
-    //     })
-
-    // })
-
-    /**************************************************************************************** */
 
     controllersdb.conectarDB(err => {
 
-        if (err) return console.log('error en conexión de base de datos', err);
-        console.log('BASE DE DATOS CONECTADA');
+        if (err) return log.error('error en conexión de base de datos', err);
+        log.info('BASE DE DATOS CONECTADA');
 
         const connectedServer = httpServer.listen(args.port, function () {
-            console.log(`Servidor Http con Websockets escuchando en el puerto ${connectedServer.address().port}`)
+            log.info(`Servidor Http con Websockets escuchando en el puerto ${connectedServer.address().port}`)
         })
-        connectedServer.on('error', error => console.log(`Error en servidor ${error}`))
+        connectedServer.on('error', error => log.error(`Error en servidor ${error}`))
 
 
     });

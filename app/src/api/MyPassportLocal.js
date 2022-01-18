@@ -3,6 +3,7 @@ const bCrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/users');
+const log =require('../logger')
 
 passport.use('signup', new LocalStrategy({
     passReqToCallback: true
@@ -13,12 +14,12 @@ passport.use('signup', new LocalStrategy({
         User.findOne({ 'username': username }, function (err, user) {
 
             if (err) {
-                console.log('Error in SignUp: ' + err);
+                log.warn('Error in SignUp: ' + err);
                 return done(err);
             }
 
             if (user) {
-                console.log('User already exists');
+                log.warn('User already exists');
                 return done(null, false)
             }
 
@@ -32,11 +33,11 @@ passport.use('signup', new LocalStrategy({
 
             User.create(newUser, (err, userWithId) => {
                 if (err) {
-                    console.log('Error in Saving user: ' + err);
+                    log.warn('Error in Saving user: ' + err);
                     return done(err);
                 }
-                console.log(user)
-                console.log('User Registration succesful');
+                log.info(user)
+                log.info('User Registration succesful');
                 return done(null, userWithId);
             });
         });
@@ -50,12 +51,12 @@ passport.use('login', new LocalStrategy(
                 return done(err);
 
             if (!user) {
-                console.log('User Not Found with username ' + username);
+                log.warn(`User Not Found with username ${user}`);
                 return done(null, false);
             }
 
             if (!isValidPassword(user, password)) {
-                console.log('Invalid Password');
+                log.warn(`Username ${user} Invalid Password`);
                 return done(null, false);
             }
 
