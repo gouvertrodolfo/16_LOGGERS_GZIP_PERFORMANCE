@@ -1,0 +1,31 @@
+version: '3.1'
+services:
+    # nodeserver:
+    #   build:
+    #     context: ./app
+    #   depends_on:
+    #     - mariadb
+    #   ports:
+    #     - "8081:8081"
+    #   volumes:
+    #     - .:/usr/src/app
+    #     - ./mode_modules:/usr/src/app/node_modules
+
+    mariadb:
+      image: mariadb
+      container_name: mariadb
+      environment:
+        MARIADB_ROOT_PASSWORD: 1234
+        MARIADB_DATABASE: 'node'
+        MARIADB_USER: 'user'
+        MARIADB_PASSWORD: 1234
+      ports:
+        - 3306:3306      
+      volumes:
+        - ./mariadb/data:/var/lib/mysql
+
+    # nginx:
+    #     build:
+    #       context: ./nginx
+    #     ports:
+    #       - "80:80"
