@@ -3,9 +3,11 @@ require('dotenv').config()
 const yargs = require('yargs/yargs')(process.argv.slice(2))
 const nuCPU = require('os').cpus().length
 const info = Router();
+const {logger} = require('../logger')
 
 info.get('/', (req, res) => {
-    
+
+    logger.warn('get info');    
 
     const info = {
         'Argumentos_Entrada': yargs,

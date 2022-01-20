@@ -1,3 +1,5 @@
+const {logger} = require('../logger')
+
 let numeros = new Map()
 
 function getRandomInt() {
@@ -10,6 +12,8 @@ const generateRandom = (cant) => {
     let number
     let valor
     let resultado = []
+
+    logger.info(`Inicia generateRandom para ${cant} valores`)
 
     numeros = new Map()
     while (i < cant) {
@@ -29,14 +33,14 @@ const generateRandom = (cant) => {
         resultado.push({ 'numero': numero, 'ocurrencias': cantOcu })
     }
 
+   logger.info(`fin generateRandom`)
    return resultado;
 }
 
 process.on('message', msg => {
-    console.log(msg)
+    logger.info(`proceso no bloqueante`)
     const response = generateRandom(msg)
-
     process.send(response)
 })
 
-
+module.exports =  {generateRandom}

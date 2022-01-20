@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pm2 start src/server.js --name=server1 --watch  -- --port 7001 --mode=fork
 
 pm2 start src/server.js --name=server2 --watch  -- --port 7002 --mode=cluster

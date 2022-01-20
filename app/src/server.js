@@ -20,7 +20,6 @@ const args = yargs
         default: 'fork',
         type: 'string'
     })
-    NODE_ENV
     .boolean('producto_mongo')
     .boolean('user_mongo')
     .argv
